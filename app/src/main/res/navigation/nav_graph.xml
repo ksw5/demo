@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/liveChatFragment">
+
+    <fragment
+        android:id="@+id/liveChatFragment"
+        android:name="com.example.demo.LiveChatFragment"
+        android:label="fragment_live_chat"
+        tools:layout="@layout/fragment_live_chat" />
+</navigation>
