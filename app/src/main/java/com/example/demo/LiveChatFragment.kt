@@ -2,40 +2,45 @@ package com.example.demo
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.fragment.app.Fragment
 import com.example.demo.databinding.FragmentLiveChatBinding
-import com.integration.bold.BoldChat
-import com.integration.bold.BoldChatListener
-import com.integration.bold.boldchat.core.BoldChatSessionListener
+import com.integration.async.core.LiveChatListener
 import com.integration.bold.boldchat.visitor.api.*
-import com.integration.core.Chatter
-import com.integration.core.FormResults
-import com.integration.core.UnavailableReason
-import com.nanorep.convesationui.bold.model.BoldAccount
-import com.nanorep.nanoengine.bot.BotChat
-import com.nanorep.nanoengine.model.AgentType
-import com.nanorep.nanoengine.model.ChatChannel
-import com.nanorep.nanoengine.model.configuration.ChatConfigurationProvider
-import com.nanorep.nanoengine.model.conversation.CreateConversationResponse
+import com.integration.core.*
 import com.nanorep.nanoengine.model.conversation.statement.*
-import com.nanorep.sdkcore.model.StatementScope
-import java.sql.Statement
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
+
 //
-class LiveChatFragment : Fragment() {
+class LiveChatFragment : Fragment(), LiveChatListener {
 
     private var _binding: FragmentLiveChatBinding? = null
     val binding get() = _binding!!
+
     val key = BuildConfig.LiveAgentKey
     val account: Account = Account(key)
-    private lateinit var boldChat: StatementRequest
+
+
     lateinit var listener: CreateChatListener
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        createChat()
+
+
+    }
 
 
     override fun onCreateView(
@@ -50,22 +55,25 @@ class LiveChatFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.agentResponse.text = "An agent will be with you shortly..."
 
-        binding.chatBox.setEndIconOnClickListener {
-            val userMessage = binding.editText.text
-            sendStatementToAgent(userMessage.toString())
-            createChat()
-            it.hideKeyboard()
-            userMessage?.clear()
 
-        }
     }
 
+
     private fun createChat() {
-        boldChat = StatementRequest()
+
         listener = object : CreateChatListener {
             override fun onChatCreated(p0: PreChat?, p1: Chat?) {
 
+                Handler(Looper.getMainLooper()).post(Runnable {
+                    binding.chatBox.setEndIconOnClickListener {
+                        val userMessage = binding.editText.text
+                        p1?.sendMessage(userMessage.toString())
+                        it.hideKeyboard()
+                        userMessage?.clear()
+                    }
+                })
 
             }
 
@@ -84,21 +92,23 @@ class LiveChatFragment : Fragment() {
 
 
         }
+
         account.createChat(listener)
 
 
     }
 
-    private fun sendStatementToAgent(statement: String) {
-        boldChat = StatementRequest()
-        boldChat.statement(statement)
 
+    private fun sendStatementToAgent(statement: String) {
+        //p1.sendMessage(statement)
     }
+
 
     fun View.hideKeyboard() {
         val inputManager =
             context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(windowToken, 0)
     }
+
 
 }
