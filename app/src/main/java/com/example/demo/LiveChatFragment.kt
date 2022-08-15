@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import com.integration.async.core.LiveChatListener
 import com.integration.bold.boldchat.visitor.api.*
 import com.integration.core.*
 import com.nanorep.nanoengine.model.conversation.statement.*
+import com.nanorep.sdkcore.model.StatementScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -32,6 +34,7 @@ class LiveChatFragment : Fragment(), LiveChatListener {
 
 
     lateinit var listener: CreateChatListener
+    lateinit var agentResponse : OnStatementResponse
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,10 +73,14 @@ class LiveChatFragment : Fragment(), LiveChatListener {
                     binding.chatBox.setEndIconOnClickListener {
                         val userMessage = binding.editText.text
                         p1?.sendMessage(userMessage.toString())
+                        Log.d("user_message", userMessage.toString())
+                        binding.userMessage.text = userMessage.toString()
                         it.hideKeyboard()
                         userMessage?.clear()
+
                     }
                 })
+
 
             }
 
@@ -96,11 +103,6 @@ class LiveChatFragment : Fragment(), LiveChatListener {
         account.createChat(listener)
 
 
-    }
-
-
-    private fun sendStatementToAgent(statement: String) {
-        //p1.sendMessage(statement)
     }
 
 

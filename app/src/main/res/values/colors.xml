@@ -11,5 +11,6 @@
     <color name="dark_blue">#00427A</color>
     <color name="faint_blue">#BBD7EF</color>
     <color name="gray_100">#808080</color>
+    <color name="yellow">#FFEB3B</color>
 
 </resources>

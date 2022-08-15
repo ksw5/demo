@@ -6,7 +6,7 @@
         <entry key="app/src/main/res/drawable-v24/background_chatbox.xml" value="0.1" />
         <entry key="app/src/main/res/drawable-v24/ic_send.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1495601173020528" />
-        <entry key="app/src/main/res/layout/fragment_live_chat.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_live_chat.xml" value="0.165" />
       </map>
     </option>
   </component>
