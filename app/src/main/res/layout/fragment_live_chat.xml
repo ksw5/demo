@@ -21,7 +21,7 @@
         android:layout_marginTop="24dp" />
 
     <TextView
-        android:id="@+id/agentResponse"
+        android:id="@+id/agentWaitingTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/agentChatTV"
@@ -29,8 +29,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:textSize="25dp"
+        android:textAlignment="center"
+        android:text="An agent will be with you shortly..."
+        android:layout_marginTop="8dp"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/agentResponse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/agentWaitingTV"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:textSize="20dp"
-        tools:text="Here is a sample of the bot response\nHello How May I help you today?"
+        tools:text="Hello! How may I help you today?"
         android:layout_marginTop="24dp"
         android:textColor="@color/white" />
 
