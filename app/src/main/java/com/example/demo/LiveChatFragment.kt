@@ -24,7 +24,7 @@ import java.lang.ref.WeakReference
 
 
 //
-class LiveChatFragment : Fragment(), BoldChatListener {
+class LiveChatFragment : Fragment() {
 
     private var _binding: FragmentLiveChatBinding? = null
     val binding get() = _binding!!
@@ -61,11 +61,6 @@ class LiveChatFragment : Fragment(), BoldChatListener {
             it.hideKeyboard()
             userMessage?.clear()
         }
-        val id = boldChat.visitorInfo.id
-        val timeStamp = System.currentTimeMillis()/1000
-        val sender = PersonType.Operator
-        val message = sender
-
 
     }
 
@@ -84,6 +79,7 @@ class LiveChatFragment : Fragment(), BoldChatListener {
             override fun chatAccepted(timestamp: Long, operator: Chatter) {
                 // at this point the agent accepted user's chat, the chat won't be canceled due to
                 // acceptance timeout, and the chat can start.
+
             }
 
             override fun messageArrived(
@@ -94,7 +90,6 @@ class LiveChatFragment : Fragment(), BoldChatListener {
             ) {
                 // agent messages will be received on this implementation
                 // sender should indicate one of PersonType enum. agent messages are followed with sender-> Operator
-
             }
 
             override fun chatEnded(formData: PostChatData?) {
