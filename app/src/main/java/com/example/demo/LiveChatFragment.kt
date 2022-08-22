@@ -14,17 +14,21 @@ import com.example.demo.databinding.FragmentLiveChatBinding
 import com.integration.async.core.LiveChatListener
 import com.integration.bold.BoldChat
 import com.integration.bold.BoldChatListener
+import com.integration.bold.boldchat.core.FormData
 import com.integration.bold.boldchat.core.PostChatData
+import com.integration.bold.boldchat.core.PreChatData
 import com.integration.bold.boldchat.visitor.api.*
 import com.integration.bold.boldchat.visitor.api.internal.RPCSender
 import com.integration.core.*
 import com.nanorep.nanoengine.model.conversation.SessionInfo
+import com.nanorep.sdkcore.utils.getAs
+import com.nanorep.sdkcore.utils.runMain
 import com.nanorep.sdkcore.utils.stringFields
 import java.lang.ref.WeakReference
 
 
 //
-class LiveChatFragment : Fragment() {
+class LiveChatFragment : Fragment(){
 
     private var _binding: FragmentLiveChatBinding? = null
     val binding get() = _binding!!
@@ -33,13 +37,17 @@ class LiveChatFragment : Fragment() {
 
     private val boldChat: BoldChat = BoldChat()
     val boldChatListener = object : BoldChatListener {
+
+
         override fun error(code: Int, message: String?, data: Any?) {
             // implement to handle errors
+            Log.d("error", "$message")
         }
 
         override fun chatAccepted(timestamp: Long, operator: Chatter) {
             // at this point the agent accepted user's chat, the chat won't be canceled due to
             // acceptance timeout, and the chat can start.
+
 
         }
 
@@ -51,14 +59,25 @@ class LiveChatFragment : Fragment() {
         ) {
             // agent messages will be received on this implementation
             // sender should indicate one of PersonType enum. agent messages are followed with sender-> Operator
-            binding.agentResponse.text = sender
-            Log.d("agent", "$message, $sender")
+            runMain {
+                binding.agentResponse.text = message
+                Log.d("agent", "$message, $sender")
+            }
 
         }
+
 
         override fun chatEnded(formData: PostChatData?) {
             // Chat ended.
 
+        }
+
+        override fun chatStarted() {
+            super.chatStarted()
+        }
+
+        override fun chatCreated(formData: PreChatData?) {
+            boldChat.start()
         }
 
         override fun visitorInfoUpdated() {
@@ -77,13 +96,12 @@ class LiveChatFragment : Fragment() {
         val view = binding.root
 
 
+
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        createChat(boldChatListener)
 
 
         binding.chatBox.setEndIconOnClickListener {
@@ -96,19 +114,25 @@ class LiveChatFragment : Fragment() {
 
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
 
-    private fun createChat(boldChatListener: BoldChatListener) {
+        createChat()
+    }
 
 
+    private fun createChat() {
         val info = SessionInfo("").apply {
-            addConfigurations("skipPreChat" to true)
+            addConfigurations("skipPrechat" to true)
         }
+
+
+
         boldChat.wListener = WeakReference(boldChatListener)
-
         boldChat.visitorInfo = info
-
-
-        boldChat.prepare(requireContext(), key, HashMap())
+        boldChat.prepare(requireContext(), key, mapOf(SessionParam.IncludeBranding to "true",
+            SessionParam.IncludeLayeredBranding to "true",
+            SessionParam.IncludeChatWindowSettings to "true"))
 
         boldChat.start()
 
